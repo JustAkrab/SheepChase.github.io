@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SheepChase</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bagel+Fat+One&family=Karla:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --ground:#EDF1E4;
+  --surface:#FBFCF7;
+  --ink:#1C2418;
+  --muted:#58644F;
+  --line:#CDD6BF;
+  --grass:#4E7F2E;
+  --grass-deep:#35591E;
+  --field:#9CC26F;
+  --field-2:#8AB55C;
+  --hay:#E2AE2B;
+  --wool:#FFFFFF;
+  --wool-shade:#DDE2D4;
+  --face:#2A2622;
+  --on-grass:#FFFFFF;
+  --display:"Bagel Fat One","Arial Rounded MT Bold","Trebuchet MS",sans-serif;
+  --body:"Karla","Segoe UI",system-ui,sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme:dark;
+    --ground:#11170F;
+    --surface:#182016;
+    --ink:#E5EBDB;
+    --muted:#A2AE95;
+    --line:#2D3828;
+    --grass:#8FC45F;
+    --grass-deep:#B3DC87;
+    --field:#2F4A22;
+    --field-2:#294120;
+    --hay:#EDBE45;
+    --wool:#F1F2EC;
+    --wool-shade:#C9CEC0;
+    --face:#1A1714;
+    --on-grass:#11170F;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme:dark;
+  --ground:#11170F;
+  --surface:#182016;
+  --ink:#E5EBDB;
+  --muted:#A2AE95;
+  --line:#2D3828;
+  --grass:#8FC45F;
+  --grass-deep:#B3DC87;
+  --field:#2F4A22;
+  --field-2:#294120;
+  --hay:#EDBE45;
+  --wool:#F1F2EC;
+  --wool-shade:#C9CEC0;
+  --face:#1A1714;
+  --on-grass:#11170F;
+}
+*{box-sizing:border-box}
+body{
+  background:var(--ground);color:var(--ink);
+  font-family:var(--body);font-size:17px;line-height:1.6;
+  padding-inline:20px;padding-block:0 64px;
+}
+.wrap{max-width:1040px;margin-inline:auto}
+a{color:var(--grass-deep)}
+a:focus-visible,button:focus-visible,canvas:focus-visible{outline:3px solid var(--hay);outline-offset:3px;border-radius:6px}
+h1,h2,h3{text-wrap:balance;margin:0}
+p{margin:0}
+
+/* top bar */
+.bar{display:flex;justify-content:space-between;align-items:center;gap:16px;padding-block:20px;font-size:14px}
+.bar .who{font-weight:700;letter-spacing:.02em}
+.bar nav{display:flex;gap:18px;flex-wrap:wrap}
+.bar nav a{color:var(--muted);text-decoration:none}
+.bar nav a:hover{color:var(--ink)}
+
+/* hero */
+.hero{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:40px;align-items:center;padding-block:28px 56px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted)}
+.hero h1{font-family:var(--display);font-weight:400;font-size:clamp(52px,8vw,96px);line-height:.9;letter-spacing:-.01em;margin-block:12px 18px;color:var(--ink)}
+.hero h1 span{color:var(--grass);display:block}
+.tagline{font-size:21px;line-height:1.4;max-width:30ch}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:26px}
+.btn{display:inline-flex;align-items:center;gap:8px;font-weight:700;font-size:16px;padding:12px 20px;border-radius:999px;text-decoration:none;border:2px solid var(--grass);transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn.primary{background:var(--grass);color:var(--on-grass)}
+.btn.ghost{color:var(--grass-deep)}
+.meta{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 24px;margin-top:32px;font-size:15px}
+.meta dt{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.meta dd{margin:2px 0 0;font-weight:600}
+
+/* hero note */
+/* place youtube video styles here if needed */
+.field-note{font-size:13px;color:var(--muted);margin-top:10px}
+
+/* sections */
+section{padding-block:48px;border-top:1px solid var(--line)}
+.sec-head{display:grid;grid-template-columns:200px minmax(0,1fr);gap:32px}
+.sec-head h2{font-family:var(--display);font-weight:400;font-size:30px;line-height:1.05;color:var(--grass-deep)}
+.prose{max-width:62ch;display:grid;gap:16px}
+.lead{font-size:20px;line-height:1.5}
+
+.controls{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin-top:8px}
+.control{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:18px;display:grid;gap:12px;align-content:start}
+.keys{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+kbd{font-family:var(--mono);font-weight:700;font-size:14px;min-width:34px;height:34px;display:inline-grid;place-items:center;padding-inline:8px;border-radius:8px;background:var(--ground);border:1px solid var(--line);border-bottom-width:3px;color:var(--ink)}
+.control p{font-size:15px;color:var(--muted)}
+.control strong{color:var(--ink)}
+
+/* gallery */
+.gallery{display:grid;grid-template-columns:1fr;gap:14px}
+.shot{border:2px dashed var(--line);border-radius:14px;display:grid;place-items:center;text-align:center;padding:20px;color:var(--muted);font-size:14px;aspect-ratio:16/9;max-width:100%;background:var(--surface)}
+.shot.big{grid-row:span 2;aspect-ratio:auto;min-height:260px}
+.shot b{display:block;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink);margin-bottom:4px}
+
+/* build log */
+.systems{display:grid;gap:0;margin-top:4px}
+.sys{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px 20px;padding-block:18px;border-bottom:1px solid var(--line)}
+.sys:first-child{padding-top:0}
+.sys h3{font-size:19px;font-weight:700}
+.sys p{grid-column:1/2;color:var(--muted);font-size:15.5px;max-width:58ch}
+.pill{grid-row:1/3;grid-column:2;align-self:start;font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;padding:5px 10px;border-radius:999px;white-space:nowrap}
+.pill.done{background:var(--grass);color:var(--on-grass)}
+.pill.wip{background:var(--hay);color:#2A2210}
+.notes{grid-column:1/2;margin:4px 0 0;padding-left:20px;color:var(--muted);font-size:14.5px;max-width:58ch}
+.notes li{margin-top:4px}
+.notes li::marker{color:var(--hay)}
+.fill{display:block;margin-top:8px;font-size:14px;font-style:italic;color:var(--muted);border-left:3px solid var(--hay);padding-left:10px}
+
+.learned{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:16px}
+.learned div{display:grid;gap:6px}
+.learned h3{font-size:17px}
+.learned p{font-size:15px;color:var(--muted)}
+
+footer{border-top:1px solid var(--line);padding-top:32px;display:flex;flex-wrap:wrap;gap:16px;justify-content:space-between;align-items:center}
+footer .big{font-family:var(--display);font-size:28px;color:var(--ink)}
+
+@media (max-width:760px){
+  .hero{grid-template-columns:1fr;gap:28px}
+  .sec-head{grid-template-columns:1fr;gap:16px}
+  .gallery{grid-template-columns:1fr}
+  .shot.big{grid-row:auto;min-height:0;aspect-ratio:16/9}
+  .bar nav{display:none}
+}
+@media (prefers-reduced-motion:reduce){.btn{transition:none}.btn:hover{transform:none}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="bar">
+    <span class="who">Reda Akrab</span>
+    <nav aria-label="Sections">
+      <a href="#about">About</a>
+      <a href="#media">Media</a>
+      <a href="#build">Build log</a>
+      <a href="#learned">Takeaways</a>
+    </nav>
+  </header>
+
+  <div class="hero">
+    <div>
+      <p class="eyebrow">Unity · WebGL prototype</p>
+      <h1>Sheep<span>Chase</span></h1>
+      <p class="tagline">Get the heck away from them sheep. Ya got one job.</p>
+      <div class="cta">
+        <a class="btn primary" href="https://play.unity.com/en/games/6d4eef31-ffc2-4ccd-a64a-eed3cf1f516a/samplebuild" target="_blank" rel="noopener">Play on Unity Play ↗</a>
+        <a class="btn ghost" href="#build">See the build log</a>
+      </div>
+      <dl class="meta">
+        <div><dt>Role</dt><dd>Design &amp; programming</dd></div>
+        <div><dt>Engine</dt><dd>Unity (C#)</dd></div>
+        <div><dt>Platform</dt><dd>Browser (WebGL)</dd></div>
+        <div><dt>Status</dt><dd>Playable prototype</dd></div>
+      </dl>
+    </div>
+    <div>
+      <iframe src="https://www.youtube-nocookie.com/embed/f6rN5l4806c?rel=0" title="SheepChase gameplay"
+        style="display:block;width:100%;aspect-ratio:16/9;border:0;border-radius:22px"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+      <p class="field-note">A tiny demo of the gameplay in progress. The real game is on Unity Play.</p>
+    </div>
+  </div>
+
+  <section id="about">
+    <div class="sec-head">
+      <h2>The one job</h2>
+      <div class="prose">
+        <p class="lead">SheepChase is a survival game with a single rule: keep your distance from the sheep for as long as you can.</p>
+        <p>The flock never stops coming. You walk the field, read where the sheep are heading, and stay out of reach. The run lasts until they catch up.</p>
+        <div class="controls">
+          <div class="control">
+            <div class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd></div>
+            <p><strong>Walk.</strong> Eight-direction movement across the field.</p>
+          </div>
+          <div class="control">
+            <div class="keys"><kbd>Left&nbsp;click</kbd></div>
+            <p><strong>Attack.</strong> The swing animation is in; hit detection and damage are still being built.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="media">
+    <div class="sec-head">
+      <h2>Level Design</h2>
+      <div class="gallery">
+        <img src="images/field-and-flock.png" alt="SheepChase screenshot: the field and the flock" style="width:100%;height:auto;display:block;border-radius:14px;border:1px solid var(--line)">
+      </div>
+    </div>
+  </section>
+
+  <section id="build">
+    <div class="sec-head">
+      <h2>Build log</h2>
+      <div class="systems">
+        <div class="sys">
+          <h3>Player movement</h3>
+          <span class="pill done">Done</span>
+          <p>WASD walking with a character that turns to face the direction of travel.</p>
+          <ul class="notes">
+            <li>Movement driven by a CharacterController & Rigidbody</li>
+            <li>Speed tuning for walking and turning designed by C# scripts.</li>
+            <li>Camera follow setup to follow the player character</li>
+          </ul>
+        </div>
+        <div class="sys">
+          <h3>Sheep pursuit</h3>
+          <span class="pill done">Done</span>
+          <p>Every sheep tracks the player and closes the gap.</p>
+          <ul class="notes">
+            <li>How the sheep find you: NavMesh agents, with 2d collision circles that show where the person is.</li>
+            <li>How the flock closes in without bunching up: 2d collision capsules designed to add a physical feel to the sheep, hence avoiding clustering or overlap.</li>
+            <li>Balancing sheep speed by using a set speed amount.</li>
+          </ul>
+        </div>
+        <div class="sys">
+          <h3>Attack animation</h3>
+          <span class="pill done">Done</span>
+          <p>Left click triggers the attack clip through the Animator.</p>
+          <ul class="notes">
+            <li>Added Animator trigger fired on left click</li>
+            <li>Designed Blend trees between idle, walk, and attack.</li>
+            <li>Utilized C# scripts to design player combat logic.</li>
+          </ul>
+        </div>
+        <div class="sys">
+          <h3>Combat logic</h3>
+          <span class="pill wip">In progress</span>
+          <ul class="notes">
+            <li>Fix combat logic to register hit detection similar to the completed sheep attack, add delays to each swing</li>
+            <li>Script Knockback logic to push sheep away from the tower.</li>
+            <li>Add hit detection for tower, to eventually finish the tower defense game design.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="learned">
+    <div class="sec-head">
+      <h2>Takeaways</h2>
+      <div class="learned">
+        <div><h3>Scope small, ship it</h3><p>One rule and two inputs was enough to get a playable build online and in front of players.</p></div>
+        <div><h3>Pursuit needs tuning</h3><p>Chase speed decides whether the game feels tense or unfair. Write down the numbers you landed on.</p></div>
+        <div><h3>What I'd do next</h3><p>Replace this with your own plan once combat lands: a timer on screen, a best-time record, or harder waves.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span class="big">Made by Reda Akrab & KM</span>
+    <a class="btn ghost" href="https://play.unity.com/en/user/fc073a16-8992-4e17-9721-15eecb5416d2" target="_blank" rel="noopener">More on Unity Play ↗</a>
+  </footer>
+</div>
+
+
+</body>
+</html>
